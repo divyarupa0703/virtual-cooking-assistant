@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Cooking Assistant (Classic Mode)</title>
+    <style>
+        /* Your CSS styles here */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>(Classic Mode)</h1>
+        <input type="text" id="command-input" placeholder="Enter your command...">
+        <div id="output"></div>
+    </div>
+
+    <script>
+        document.getElementById("command-input").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                var command = event.target.value;
+                document.getElementById("output").innerHTML = "<p>You entered: " + command + "</p>";
+                // Send command to backend for processing
+                sendCommand(command); // Clear input field after sending command
+            }
+        });
+
+        function sendCommand(command) {
+            fetch('/suggested_recipes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ command: command })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to send command');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // You can handle the response data here
+                // Display the recipe titles
+                if (data.success) {
+                    var outputDiv = document.getElementById("output");
+                    outputDiv.innerHTML = "<p>Suggested Recipes:</p>";
+                    var recipeTitles = data.recipe_titles;
+                    for (var i = 0; i < recipeTitles.length; i++) {
+                        // Add a click event listener to each recipe title
+                        outputDiv.innerHTML += `<p class="recipe-title" onclick="viewRecipeDetails('${recipeTitles[i]}')">${i + 1}. ${recipeTitles[i]}</p>`;
+                    }
+                    outputDiv.innerHTML += "<p>Click on a recipe title to view details.</p>";
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Function to handle clicking on recipe title
+        function viewRecipeDetails(recipeName) {
+            // Create JSON data with recipe name
+            const requestData = {
+                recipe_name: recipeName
+            };
+    
+            // Send the JSON data to the backend to fetch details
+            fetch(`/recipe_details?recipe_name=${encodeURIComponent(recipeName)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch recipe details');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // Handle the recipe details response
+                // Redirect to the recipe details page
+                window.location.href = `/recipe_details?recipe_name=${encodeURIComponent(recipeName)}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

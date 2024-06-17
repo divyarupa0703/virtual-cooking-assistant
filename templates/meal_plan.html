@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Meal Plan</title>
+</head>
+<body>
+    <h1>Generated Meal Plan</h1>
+    <div id="mealPlan">
+        <!-- Display meal plan data here -->
+    </div>
+
+    <script>
+        // Extract meal plan data from URL query parameters
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const mealPlanJSON = urlParams.get('meal_plan');
+
+        // Parse JSON string to JavaScript object
+        const mealPlan = JSON.parse(mealPlanJSON);
+
+        // Display meal plan on the webpage
+        if (mealPlan && mealPlan.meals && mealPlan.meals.length > 0) {
+            const mealPlanDiv = document.getElementById('mealPlan');
+            const ul = document.createElement('ul');
+            mealPlan.meals.forEach(meal => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>Title:</strong> ${meal.title}<br>
+                                <strong>Ready in Minutes:</strong> ${meal.readyInMinutes}<br>
+                                <strong>Servings:</strong> ${meal.servings}<br>
+                                <strong>Source URL:</strong> <a href="${meal.sourceUrl}">${meal.sourceUrl}</a><br><br>`;
+                ul.appendChild(li);
+            });
+            mealPlanDiv.appendChild(ul);
+        } else {
+            // Display error message if no meal plan data found
+            const mealPlanDiv = document.getElementById('mealPlan');
+            mealPlanDiv.innerHTML = '<p>No meal plan generated.</p>';
+        }
+    </script>
+</body>
+</html>

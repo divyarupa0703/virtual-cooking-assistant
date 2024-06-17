@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Cooking Assistant</title>
+    <style>
+        body {
+            font-family:Crimson Text;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            background-image:url('https://edit.sundayriley.com/wp-content/uploads/2022/05/skincare-ingredients-the-sunday-edit.jpg')
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color:rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        #jarvis {
+            width: 200px;
+            height: 200px;
+            background-image: url('https://github.com/Sivatejvarma/Jarvis/blob/main/happy.gif?raw=true'); /* Replace 'path_to_your_jarvis_icon.png' with your Jarvis icon URL */
+            background-size:cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        #listening-status {
+            display: none;
+            color: #666;
+        }
+
+        #output {
+            color: #333;
+        }
+
+        .recipe-title {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Voice Cooking Assistant</h1>
+        <div id="jarvis" onclick="startListening()"></div>
+        <p id="listening-status">Listening...</p>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function startListening() {
+            var recognition = new webkitSpeechRecognition();
+            recognition.start();
+            document.getElementById("listening-status").style.display = "block";
+
+            recognition.onresult = function(event) {
+                var transcript = event.results[0][0].transcript;
+                document.getElementById("output").innerHTML = "<p>You said: " + transcript + "</p>";
+                // Send transcript to backend for processing
+                sendTranscript(transcript);
+            };
+
+            recognition.onend = function() {
+                document.getElementById("listening-status").style.display = "none";
+            };
+        }
+
+        function sendTranscript(transcript) {
+            fetch('/suggested_recipes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ transcript: transcript })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to send transcript');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // You can handle the response data here
+                // Display the recipe titles
+                if (data.success) {
+                    var outputDiv = document.getElementById("output");
+                    outputDiv.innerHTML = "<p>Suggested Recipes:</p>";
+                    var recipeTitles = data.recipe_titles;
+                    for (var i = 0; i < recipeTitles.length; i++) {
+                        // Add a click event listener to each recipe title
+                        outputDiv.innerHTML += `<p class="recipe-title" onclick="viewRecipeDetails('${recipeTitles[i]}')">${i + 1}. ${recipeTitles[i]}</p>`;
+                    }
+                    outputDiv.innerHTML += "<p>Click on a recipe title to view details.</p>";
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Function to handle clicking on recipe title
+        function viewRecipeDetails(recipeName) {
+            // Create JSON data with recipe name
+            const requestData = {
+                recipe_name: recipeName
+            };
+    
+            // Send the JSON data to the backend to fetch details
+            fetch(`/recipe_details?recipe_name=${encodeURIComponent(recipeName)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch recipe details');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // Handle the recipe details response
+                // Redirect to the recipe details page
+                window.location.href = `/recipe_details?recipe_name=${encodeURIComponent(recipeName)}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

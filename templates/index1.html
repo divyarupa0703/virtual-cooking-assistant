@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+</head>
+<body>
+    <h1>Welcome to the Meal Planner</h1>
+    <form action="/generate_meal_plan" method="GET">
+        <button type="submit">Generate Meal Plan</button>
+    </form>
+    <script>
+        // Add an event listener to the form submission
+        document.getElementById("generateMealPlanForm").addEventListener("submit", function(event) {
+            // Prevent the default form submission behavior
+            event.preventDefault();
+            
+            // Redirect the user to the meal plan form page
+            window.location.href = "/meal_plan_form";
+        });
+    </script>
+</body>
+</html>
+

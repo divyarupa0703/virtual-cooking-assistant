@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Plan</title>
+</head>
+<body>
+    <h1>Meal Plan</h1>
+    <div id="mealPlanContainer">
+        <!-- Content will be dynamically added here -->
+    </div>
+
+    <script>
+        // Function to fetch meal plan data from the server
+        function fetchMealPlan() {
+            fetch('/meal_plan?meal_plan')
+                .then(response => response.json())
+                .then(data => {
+                    // Process the meal plan data and update the HTML content
+                    const mealPlanContainer = document.getElementById('mealPlanContainer');
+                    mealPlanContainer.innerHTML = ''; // Clear existing content
+                    if (data && data.meals) {
+                        const ul = document.createElement('ul');
+                        data.meals.forEach(meal => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<strong>${meal.title}</strong><br>
+                                            Ready in: ${meal.readyInMinutes} minutes<br>
+                                            Servings: ${meal.servings}<br>
+                                            <a href="${meal.sourceUrl}">Source</a>`;
+                            ul.appendChild(li);
+                        });
+                        mealPlanContainer.appendChild(ul);
+                    } else {
+                        mealPlanContainer.innerHTML = '<p>No meal plan generated.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching meal plan:', error);
+                });
+        }
+
+        // Call the fetchMealPlan function when the page loads
+        window.addEventListener('load', fetchMealPlan);
+    </script> 
+</body>
+</html>

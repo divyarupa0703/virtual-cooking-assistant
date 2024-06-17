@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe App</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/page.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            text-align: center;
+        }
+
+        #upper-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+
+        #upper-buttons a {
+            margin-right: 10px;
+            color: #fff;
+            background-color: #007bff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        #upper-buttons a:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 250px auto 50px; /* Adjusted margin to bring container down */
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Translucent background */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #666;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 250px;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #E50914; /* Netflix red */
+            color: #fff;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        
+        
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="upper-buttons">
+        <a href="#">Home</a>
+        <a href="#" id="contactUsButton" class="button">Contact Us</a>
+    </div>
+    <div class="button-container"><h1>RECIPE APP</h1>
+        <a href="/voice" class="button">Voice Assistant</a>
+        <a href="/classic" class="button">Classic Mode</a>
+        <a href="/recipe" class="button">Recipe Book</a>
+        
+    </div>
+    
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Event listener for the "Contact Us" button click
+            $("#contactUsButton").click(function() {
+                // Display the contact number
+                alert("Contact us at: +1234567890"); // Replace with your actual contact number
+            });
+
+            // Event listener for the "Generate Meal Plan" button click
+            // Event listener for the "Generate Meal Plan" button click
+            $("#generateButton").click(function() {
+                // Redirect to the route for generating meal plan
+                window.location.href = "/generate_meal_plan";
+                });
+            });
+    </script>
+</body>
+</html>
